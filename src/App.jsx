@@ -18,11 +18,15 @@ export const App = () => {
   const [filterByUser, setFilterByUser] = useState('All');
   const [query, setQuery] = useState('');
   const [filterByCategory, setFilterByCategory] = useState([]);
+  const [sortingOrder, setSortingOrder] = useState('');
+  const [sortByCategory, setSortByCategory] = useState('');
 
   const visibleProducts = getPreparedProducts(products, {
     filterByUser,
     query,
     filterByCategory,
+    sortingOrder,
+    sortByCategory,
   });
 
   const handleResetFilter = () => {
@@ -39,6 +43,24 @@ export const App = () => {
     } else {
       setFilterByCategory([...filterByCategory, category.title]);
     }
+  };
+
+  const handleSort = category => {
+    if (sortByCategory !== category) {
+      setSortByCategory(category);
+      setSortingOrder('asc');
+
+      return;
+    }
+
+    if (sortingOrder === 'asc') {
+      setSortingOrder('desc');
+
+      return;
+    }
+
+    setSortByCategory('');
+    setSortingOrder('asc');
   };
 
   return (
@@ -155,49 +177,30 @@ export const App = () => {
             >
               <thead>
                 <tr>
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      ID
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
-
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      Product
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-down" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
-
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      Category
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-up" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
-
-                  <th>
-                    <span className="is-flex is-flex-wrap-nowrap">
-                      User
-                      <a href="#/">
-                        <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
-                        </span>
-                      </a>
-                    </span>
-                  </th>
+                  {['ID', 'Product', 'Category', 'User'].map(col => (
+                    <th key={col}>
+                      <span className="is-flex is-flex-wrap-nowrap">
+                        {col}
+                        <a href="#/" onClick={() => handleSort(col)}>
+                          <span className="icon">
+                            <i
+                              data-cy="SortIcon"
+                              className={cn('fas', {
+                                'fa-sort':
+                                  sortByCategory !== col || sortingOrder === '',
+                                'fa-sort-up':
+                                  sortByCategory === col &&
+                                  sortingOrder === 'asc',
+                                'fa-sort-down':
+                                  sortByCategory === col &&
+                                  sortingOrder === 'desc',
+                              })}
+                            />
+                          </span>
+                        </a>
+                      </span>
+                    </th>
+                  ))}
                 </tr>
               </thead>
 

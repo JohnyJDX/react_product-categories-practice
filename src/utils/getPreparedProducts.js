@@ -1,6 +1,6 @@
 const getPreparedProducts = (
   products,
-  { filterByUser, query, filterByCategory },
+  { filterByUser, query, filterByCategory, sortingOrder, sortByCategory },
 ) => {
   let preparedProducts = [...products];
 
@@ -22,6 +22,25 @@ const getPreparedProducts = (
     preparedProducts = preparedProducts.filter(product =>
       filterByCategory.includes(product.category.title),
     );
+  }
+
+  if (sortingOrder && sortByCategory) {
+    preparedProducts.sort((a, b) => {
+      const order = sortingOrder === 'asc' ? 1 : -1;
+
+      switch (sortByCategory) {
+        case 'ID':
+          return order * (a.id - b.id);
+        case 'Product':
+          return order * a.name.localeCompare(b.name);
+        case 'Category':
+          return order * a.category.title.localeCompare(b.category.title);
+        case 'User':
+          return order * a.user.name.localeCompare(b.user.name);
+        default:
+          return 0;
+      }
+    });
   }
 
   return preparedProducts;
