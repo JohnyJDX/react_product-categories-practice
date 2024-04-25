@@ -17,15 +17,28 @@ const products = productsFromServer.map(product => {
 export const App = () => {
   const [filterByUser, setFilterByUser] = useState('All');
   const [query, setQuery] = useState('');
+  const [filterByCategory, setFilterByCategory] = useState([]);
 
   const visibleProducts = getPreparedProducts(products, {
     filterByUser,
     query,
+    filterByCategory,
   });
 
   const handleResetFilter = () => {
     setFilterByUser('All');
     setQuery('');
+    setFilterByCategory([]);
+  };
+
+  const handleFilterByCategory = category => {
+    if (filterByCategory.includes(category.title)) {
+      setFilterByCategory(
+        filterByCategory.filter(item => item !== category.title),
+      );
+    } else {
+      setFilterByCategory([...filterByCategory, category.title]);
+    }
   };
 
   return (
@@ -96,33 +109,27 @@ export const App = () => {
               <a
                 href="#/"
                 data-cy="AllCategories"
-                className="button is-success mr-6 is-outlined"
+                onClick={() => setFilterByCategory([])}
+                className={cn('button is-success mr-6', {
+                  'is-outlined': filterByCategory.length !== 0,
+                })}
               >
                 All
               </a>
 
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 1
-              </a>
-
-              <a data-cy="Category" className="button mr-2 my-1" href="#/">
-                Category 2
-              </a>
-
-              <a
-                data-cy="Category"
-                className="button mr-2 my-1 is-info"
-                href="#/"
-              >
-                Category 3
-              </a>
-              <a data-cy="Category" className="button mr-2 my-1" href="#/">
-                Category 4
-              </a>
+              {categoriesFromServer.map(category => (
+                <a
+                  key={category.id}
+                  onClick={() => handleFilterByCategory(category)}
+                  data-cy="Category"
+                  className={cn('button mr-2 my-1', {
+                    'is-info': filterByCategory.includes(category.title),
+                  })}
+                  href="#/"
+                >
+                  {category.title}
+                </a>
+              ))}
             </div>
 
             <div className="panel-block">

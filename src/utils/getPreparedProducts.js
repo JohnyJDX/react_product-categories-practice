@@ -1,4 +1,7 @@
-const getPreparedProducts = (products, { filterByUser, query }) => {
+const getPreparedProducts = (
+  products,
+  { filterByUser, query, filterByCategory },
+) => {
   let preparedProducts = [...products];
 
   if (filterByUser !== 'All') {
@@ -12,6 +15,12 @@ const getPreparedProducts = (products, { filterByUser, query }) => {
 
     preparedProducts = preparedProducts.filter(product =>
       product.name.toLowerCase().includes(normalizedQuery),
+    );
+  }
+
+  if (filterByCategory.length > 0) {
+    preparedProducts = preparedProducts.filter(product =>
+      filterByCategory.includes(product.category.title),
     );
   }
 
