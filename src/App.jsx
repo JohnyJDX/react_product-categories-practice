@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-import React from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 
 import cn from 'classnames';
@@ -15,6 +14,8 @@ const products = productsFromServer.map(product => {
 });
 
 export const App = () => {
+  const [filterByUser, setFilterByUser] = useState('All');
+
   return (
     <div className="section">
       <div className="container">
@@ -25,21 +26,30 @@ export const App = () => {
             <p className="panel-heading">Filters</p>
 
             <p className="panel-tabs has-text-weight-bold">
-              <a data-cy="FilterAllUsers" href="#/">
+              <a
+                className={cn('', {
+                  'is-active': filterByUser === 'All',
+                })}
+                onClick={() => setFilterByUser('All')}
+                data-cy="FilterAllUsers"
+                href="#/"
+              >
                 All
               </a>
 
-              <a data-cy="FilterUser" href="#/">
-                User 1
-              </a>
-
-              <a data-cy="FilterUser" href="#/" className="is-active">
-                User 2
-              </a>
-
-              <a data-cy="FilterUser" href="#/">
-                User 3
-              </a>
+              {usersFromServer.map(user => (
+                <a
+                  key={user.id}
+                  onClick={() => setFilterByUser(user.name)}
+                  className={cn('', {
+                    'is-active': user.name === filterByUser,
+                  })}
+                  data-cy="FilterUser"
+                  href="#/"
+                >
+                  {user.name}
+                </a>
+              ))}
             </p>
 
             <div className="panel-block">
@@ -57,7 +67,6 @@ export const App = () => {
                 </span>
 
                 <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                   <button
                     data-cy="ClearButton"
                     type="button"
@@ -171,7 +180,7 @@ export const App = () => {
 
             <tbody>
               {products.map(product => (
-                <tr data-cy="Product">
+                <tr key={product.id} data-cy="Product">
                   <td className="has-text-weight-bold" data-cy="ProductId">
                     {product.id}
                   </td>
