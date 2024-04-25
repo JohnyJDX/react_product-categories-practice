@@ -23,6 +23,11 @@ export const App = () => {
     query,
   });
 
+  const handleResetFilter = () => {
+    setFilterByUser('All');
+    setQuery('');
+  };
+
   return (
     <div className="section">
       <div className="container">
@@ -122,6 +127,7 @@ export const App = () => {
 
             <div className="panel-block">
               <a
+                onClick={handleResetFilter}
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
